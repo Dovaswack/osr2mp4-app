@@ -27,6 +27,19 @@ class OsrButton(ButtonBrowse):
 		if filename == "":  # if user cancel select
 			return
 
+		if not "str" in str(type(filename)):
+			self.main_window.mode = "queue_mode"
+			f = open("queue_list.txt", "w+")
+			for x in filename:
+				f.write(x + "\n")
+			f.close()
+
+			with open('queue_list.txt', 'r') as fin:
+				data = fin.read().splitlines(True)
+				filename = data[0].strip("\n")
+			with open('queue_list.txt', 'w') as fout:
+				fout.writelines(data[1:])
+		print(filename)
 		self.main_window.setreplay(filename)
 		mappath = get_right_map(filename)
 		if mappath is not None:

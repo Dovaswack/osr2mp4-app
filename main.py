@@ -13,6 +13,8 @@ from osr2mp4.Utils.getmods import mod_string_to_enums
 from osr2mp4.osrparse.replay import Replay
 
 from HomeComponents.AutoCheckBox import AutoCheckBox
+from HomeComponents.QueueCheckBox import QueueCheckBox
+
 from HomeComponents.Buttons.FolderButton import FolderButton
 from HomeComponents.Buttons.MapsetButton import MapsetButton
 from HomeComponents.Buttons.Options import Options
@@ -67,7 +69,7 @@ class Window(QMainWindow):
 		self.minimum_resolution = [640, 360]
 		self.previous_resolution = [0, 0]
 		self.default_width, self.default_height = window_width, window_height
-
+		self.mode = "no_queue"
 		self.popup_bool = True
 		self.clicked_inside = False
 		self.prevreplay = ""
@@ -78,6 +80,7 @@ class Window(QMainWindow):
 		self.logo = Logo(self)
 		self.osrpath = OsrPath(self)
 		self.mapsetpath = MapSetPath(self)
+		self.mapsetpath = MapSetPath(self)
 		self.skin_dropdown = SkinDropDown(self)
 		self.options = Options(self)
 		self.updatebutton = UpdateButton(self)
@@ -85,12 +88,13 @@ class Window(QMainWindow):
 		self.osrgraybutton = OsrGrayButton(self)
 		self.osumapbutton = osuMapButton(self)
 		self.autocheckbox = AutoCheckBox(self)
+		self.queuecheckbox = QueueCheckBox(self)
 		self.cancelbutton = CancelButton(self)
 
 		logging.info("Loaded Buttons")
 
 		self.blurrable_widgets = [self.osrbutton, self.mapsetbutton, self.startbutton, self.logo, self.osrpath,
-		                          self.mapsetpath, self.options, self.skin_dropdown, self.cancelbutton, self.folderbutton, self.autocheckbox]
+		                          self.mapsetpath, self.options, self.skin_dropdown, self.cancelbutton, self.folderbutton, self.autocheckbox, self.queuecheckbox]
 
 		self.langs_dropdown = LanguageDropDown(self)
 		self.popup_window = PopupWindow(self)
@@ -114,9 +118,11 @@ class Window(QMainWindow):
 		current_config[".osr path"] = "brrrrr"  # because if .osr path is auto, it won't check for latest play on startup
 		self.check_osu_path()
 		# self.check_replay_map()
-
 		self.show()
 		self.resize(window_width, window_height)
+
+	def toggle_queue(self):
+		self.osrbutton.file_type = "multiple_osr"
 
 	def toggle_auto(self, enable_auto):
 		if enable_auto:
@@ -186,6 +192,7 @@ class Window(QMainWindow):
 		self.cancelbutton.changesize()
 		self.folderbutton.changesize()
 		self.autocheckbox.changesize()
+		self.queuecheckbox.changesize()
 		self.osrgraybutton.changesize()
 		self.osumapbutton.changesize()
 		self.langs_dropdown.changesize()
@@ -249,7 +256,6 @@ class Window(QMainWindow):
 	def setreplay(self, replay_path):
 		if replay_path is None or replay_path == "":
 			return
-
 		replay_name = os.path.split(replay_path)[-1]
 		self.osrpath.setText(replay_name)
 
@@ -346,6 +352,8 @@ def main(execpath="."):
 
 	ret = App.exec_()
 	if window.startbutton.proc is not None and window.startbutton.proc.poll() is None:
+		print("suck my dick")
+
 		kill(window.startbutton.proc.pid)
 		cleanupkill()
 		with open("progress.txt", "w") as file:

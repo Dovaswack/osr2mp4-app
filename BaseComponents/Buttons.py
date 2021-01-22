@@ -152,6 +152,9 @@ class ButtonBrowse(Button):
 		self.browsing = True
 		if self.file_type == "Folder":
 			file_name = QFileDialog.getExistingDirectory(None, "Select Directory", self.browsepath)
+		elif self.file_type == "multiple_osr":
+			file_name = QFileDialog.getOpenFileNames(self, 'Open file', self.browsepath,
+													"{} files (*{})".format(".osr", ".osr"))[0]
 		else:
 			file_name = QFileDialog.getOpenFileName(self, 'Open file', self.browsepath,
 			                                        "{} files (*{})".format(self.file_type, self.file_type))[0]

@@ -10,7 +10,7 @@ from helper.datahelper import save, loadname
 class StartButton(Button):
 	def __init__(self, parent):
 		super(StartButton, self).__init__(parent)
-
+		self.main_window = parent
 		self.default_x = 600
 		self.default_y = 330
 		self.default_size = 3.5
@@ -20,11 +20,13 @@ class StartButton(Button):
 		self.img_click = "res/Start_Click.png"
 		self.img_shadow = "res/Start_Shadow.png"
 		self.proc = None
-		self.parent = parent
+		#self.parent = parent
 		super().setup()
 
 	def mouseclicked(self):
+		print('adsadsadsadsa')
 		filename = loadname(current_config)
+		print(current_config)
 		save(filename)
 
 		if self.proc is None or self.proc.poll() is not None:
